@@ -8,23 +8,24 @@
 import SwiftUI
 
 struct ContributionGraph: View {
-    @State private var viewModel: ContributionGraphViewModel
+    var dayCounts: [Date: Int]
+    var weeks: Int = 16
 
     let cellSize: CGFloat = 18
     let spacing: CGFloat = 3
 
-    init(dayCounts: [Date: Int]) {
-        _viewModel = State(wrappedValue: ContributionGraphViewModel(dayCounts: dayCounts))
+    private var grid: [[Int]] {
+        ContributionGraphViewModel.buildGrid(from: dayCounts, weeks: weeks)
     }
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: spacing) {
-                ForEach(0..<viewModel.weeks, id: \.self) { week in
+                ForEach(0..<weeks, id: \.self) { week in
                     VStack(spacing: spacing) {
                         ForEach(0..<7, id: \.self) { day in
                             RoundedRectangle(cornerRadius: 2)
-                                .fill(color(for: viewModel.grid[week][day]))
+                                .fill(color(for: grid[week][day]))
                                 .frame(width: cellSize, height: cellSize)
                         }
                     }
@@ -57,6 +58,8 @@ extension Color {
     }
 }
 
+/*
 #Preview {
     ContributionGraph(dayCounts: MockData.submissionCalendar)
 }
+*/
