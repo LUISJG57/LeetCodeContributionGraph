@@ -7,7 +7,7 @@
 
 import Foundation
 
-// MARK: - Response Models
+// MARK: - Calendar Response Models
 
 struct LeetCodeResponse: Codable {
     let data: LeetCodeData
@@ -25,12 +25,88 @@ struct UserCalendar: Codable {
     let submissionCalendar: String
 }
 
+// MARK: - Profile Response Models
+
+struct LeetCodeProfileResponse: Codable {
+    let data: LeetCodeProfileData
+}
+
+struct LeetCodeProfileData: Codable {
+    let matchedUser: ProfileMatchedUser
+}
+
+struct ProfileMatchedUser: Codable {
+    let username: String
+    let githubUrl: String?
+    let twitterUrl: String?
+    let linkedinUrl: String?
+    let profile: UserProfile
+}
+
+struct UserProfile: Codable {
+    let ranking: Int
+    let userAvatar: String
+    let realName: String
+    let aboutMe: String
+    let school: String?
+    let websites: [String]
+    let countryName: String?
+    let company: String?
+    let jobTitle: String?
+    let skillTags: [String]
+    let reputation: Int
+    let solutionCount: Int
+}
+
 // MARK: - Service
 
 struct LeetCodeService {
     static let shared = LeetCodeService()
 
-    /// Fetches the submission calendar for a public LeetCode profile.
+    // Fetches the public profile for a LeetCode user.
+    func fetchProfile(username: String) async throws -> ProfileMatchedUser {
+        let url = URL(string: "https://leetcode.com/graphql/")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("https://leetcode.com", forHTTPHeaderField: "Referer")
+
+        let query = """
+        query userPublicProfile($username: String!) {
+          matchedUser(username: $username) {
+            username
+            githubUrl
+            twitterUrl
+            linkedinUrl
+            profile {
+              ranking
+              userAvatar
+              realName
+              aboutMe
+              school
+              websites
+              countryName
+              company
+              jobTitle
+              skillTags
+              reputation
+              solutionCount
+            }
+          }
+        }
+        """
+        let body: [String: Any] = [
+            "query": query,
+            "variables": ["username": username]
+        ]
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+
+        let (data, _) = try await URLSession.shared.data(for: request)
+        let decoded = try JSONDecoder().decode(LeetCodeProfileResponse.self, from: data)
+        return decoded.data.matchedUser
+    }
+
+    // Fetches the submission calendar for a public LeetCode profile.
     func fetchCalendar(username: String, year: Int) async throws -> [Date: Int] {
         let url = URL(string: "https://leetcode.com/graphql/")!
         var request = URLRequest(url: url)
