@@ -23,9 +23,9 @@ struct ContributionWidgetEntryView: View {
 
     private var cellSize: CGFloat {
         switch family {
-        case .systemMedium: return 12
-        case .systemLarge:  return 14
-        default:            return 12
+        case .systemMedium: return 18 //12
+        case .systemLarge:  return 18 //14
+        default:            return 18 //12
         }
     }
 
@@ -45,20 +45,13 @@ struct ContributionWidgetEntryView: View {
     }
 
     private var contributionGridView: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("LeetCode")
-                .font(.caption2)
-                .fontWeight(.semibold)
-                .foregroundStyle(.secondary)
-
-            HStack(spacing: spacing) {
-                ForEach(0..<weeks, id: \.self) { week in
-                    VStack(spacing: spacing) {
-                        ForEach(0..<7, id: \.self) { day in
-                            RoundedRectangle(cornerRadius: 2)
-                                .fill(color(for: grid[week][day]))
-                                .frame(width: cellSize, height: cellSize)
-                        }
+        HStack(spacing: spacing) {
+            ForEach(0..<weeks, id: \.self) { week in
+                VStack(spacing: spacing) {
+                    ForEach(0..<7, id: \.self) { day in
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(color(for: grid[week][day]))
+                            .frame(width: cellSize, height: cellSize)
                     }
                 }
             }
