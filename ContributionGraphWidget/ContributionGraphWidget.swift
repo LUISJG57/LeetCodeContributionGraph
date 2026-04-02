@@ -72,8 +72,8 @@ struct LeetCodeContributionWidget: Widget {
             ContributionWidgetEntryView(entry: entry)
                 .containerBackground(.fill.tertiary, for: .widget)
         }
-        .configurationDisplayName("LeetCode Contributions")
-        .description("Your LeetCode submission history at a glance.")
+        //.configurationDisplayName("LeetCode Contributions")
+        //.description("Your LeetCode submission history at a glance.")
         .supportedFamilies([.systemMedium, .systemLarge])
     }
 }
