@@ -70,15 +70,15 @@ struct LeetCodeContributionWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: ContributionTimelineProvider()) { entry in
             ContributionWidgetEntryView(entry: entry)
-                .containerBackground(.fill.tertiary, for: .widget)
+                .containerBackground(.black, for: .widget)
         }
-        //.configurationDisplayName("LeetCode Contributions")
-        //.description("Your LeetCode submission history at a glance.")
-        .supportedFamilies([.systemMedium, .systemLarge])
+        .configurationDisplayName("LeetCode Contributions")
+        .description("Your LeetCode submission history at a glance.")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }
 
-#Preview(as: .systemMedium) {
+#Preview(as: .systemSmall) {
     LeetCodeContributionWidget()
 } timeline: {
     ContributionEntry.placeholder
