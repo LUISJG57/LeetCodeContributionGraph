@@ -15,21 +15,30 @@ struct ContributionWidgetEntryView: View {
 
     private var weeks: Int {
         switch family {
+        case .systemSmall:  return 7
         case .systemMedium: return 16
-        case .systemLarge:  return 20
+        case .systemLarge:  return 16
         default:            return 16
         }
     }
 
     private var cellSize: CGFloat {
         switch family {
-        case .systemMedium: return 18 //12
-        case .systemLarge:  return 18 //14
-        default:            return 18 //12
+        case .systemSmall:  return 15
+        case .systemMedium: return 16
+        case .systemLarge:  return 16
+        default:            return 16
         }
     }
 
-    private let spacing: CGFloat = 2
+    private var spacing: CGFloat {
+        switch family {
+        case .systemSmall:  return 4
+        case .systemMedium: return 4
+        case .systemLarge:  return 4
+        default:            return 4
+        }
+    }
 
     private var grid: [[Int]] {
         ContributionGraphViewModel.buildGrid(from: entry.dayCounts, weeks: weeks)
@@ -56,15 +65,16 @@ struct ContributionWidgetEntryView: View {
                 }
             }
         }
+        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 
     private func color(for level: Int) -> Color {
         switch level {
         case 0: return Color(.systemGray5)
-        case 1: return Color(hex: "#9be9a8")
-        case 2: return Color(hex: "#40c463")
-        case 3: return Color(hex: "#30a14e")
-        default: return Color(hex: "#216e39")
+        case 1: return Color(hex: "#8965C2")
+        case 2: return Color(hex: "#9557BC")
+        case 3: return Color(hex: "#A149B6")
+        default: return Color(hex: "#AD3BB0")
         }
     }
 }

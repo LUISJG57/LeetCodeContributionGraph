@@ -24,7 +24,7 @@ struct ContributionGraph: View {
                 ForEach(0..<weeks, id: \.self) { week in
                     VStack(spacing: spacing) {
                         ForEach(0..<7, id: \.self) { day in
-                            RoundedRectangle(cornerRadius: 2)
+                            RoundedRectangle(cornerRadius: 5.5)
                                 .fill(color(for: grid[week][day]))
                                 .frame(width: cellSize, height: cellSize)
                         }
