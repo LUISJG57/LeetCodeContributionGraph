@@ -29,6 +29,9 @@ struct ProfileView: View {
     @ViewBuilder
     private func profileContent(_ user: ProfileMatchedUser) -> some View {
         VStack(spacing: 16) {
+            Text("@\(user.username)")
+                .font(.headline)
+                .foregroundStyle(.secondary)
             // Avatar + Name
             HStack(spacing: 16) {
                 AsyncImage(url: URL(string: user.profile.userAvatar)) { image in
@@ -42,19 +45,35 @@ struct ProfileView: View {
                 .frame(width: 80, height: 80)
                 .clipShape(Circle())
 
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 6) {
                     Text(user.profile.realName)
-                        .font(.title2)
-                        .fontWeight(.bold)
-
-                    Text("@\(user.username)")
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .fontWeight(.bold)
+                    
+                    // Stats row
+                    /// Aqui podriamos quitar reputation y solutions y remplazarlos por acceptance rate y badges
+                    HStack(spacing: 20) {
+                        statItem(value: "\(user.profile.ranking)", label: "Ranking")
+                        statItem(value: "\(user.profile.reputation)", label: "Reputation")
+                        statItem(value: "\(user.profile.solutionCount)", label: "Solutions")
+                    }
+                    
 
-                    if let country = user.profile.countryName {
-                        Text(country)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                    HStack(spacing: 20) {
+                        // Country / Job Company / School
+                        if let country = user.profile.countryName {
+                            Text(country)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        let details = jobDetails(user.profile)
+                        if !details.isEmpty {
+                            ForEach(details, id: \.self) { detail in
+                                Text(detail)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
                     }
                 }
 
@@ -62,20 +81,11 @@ struct ProfileView: View {
             }
             .padding(.horizontal)
 
-            // Stats row
-            HStack(spacing: 24) {
-                statItem(value: "\(user.profile.ranking)", label: "Ranking")
-                statItem(value: "\(user.profile.reputation)", label: "Reputation")
-                statItem(value: "\(user.profile.solutionCount)", label: "Solutions")
-            }
-            .padding(.horizontal)
+            
 
             // About Me
             if !user.profile.aboutMe.isEmpty {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("About")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
                     Text(user.profile.aboutMe)
                         .font(.subheadline)
                 }
@@ -83,21 +93,39 @@ struct ProfileView: View {
                 .padding(.horizontal)
             }
 
-            // Job / Company / School
-            let details = jobDetails(user.profile)
-            if !details.isEmpty {
-                VStack(alignment: .leading, spacing: 4) {
-                    ForEach(details, id: \.self) { detail in
-                        Text(detail)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+            
+            
+            // Socials + Websites
+            let links = socialLinks(user)
+            if !links.isEmpty || !user.profile.websites.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(links, id: \.url) { link in
+                            Link(link.label, destination: URL(string: link.url)!)
+                                .font(.caption)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .background(Color(.systemGray5))
+                                .cornerRadius(8)
+                        }
+                        ForEach(user.profile.websites, id: \.self) { site in
+                            if let url = URL(string: site) {
+                                Link(url.host ?? site, destination: url)
+                                    .font(.caption)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 4)
+                                    .background(Color(.systemGray5))
+                                    .cornerRadius(8)
+                            }
+                        }
                     }
+                    .padding(.horizontal)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal)
             }
 
             // Skill Tags
+            /// Maybe no vendria mal el mapa de las skills que viene en leetcode
+            /*
             if !user.profile.skillTags.isEmpty {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
@@ -113,43 +141,20 @@ struct ProfileView: View {
                     .padding(.horizontal)
                 }
             }
+            */
 
-            // Social Links
-            let links = socialLinks(user)
-            if !links.isEmpty {
-                HStack(spacing: 16) {
-                    ForEach(links, id: \.url) { link in
-                        Link(link.label, destination: URL(string: link.url)!)
-                            .font(.caption)
-                    }
-                }
-                .padding(.horizontal)
-            }
-
-            // Websites
-            if !user.profile.websites.isEmpty {
-                HStack(spacing: 16) {
-                    ForEach(user.profile.websites, id: \.self) { site in
-                        if let url = URL(string: site) {
-                            Link(url.host ?? site, destination: url)
-                                .font(.caption)
-                        }
-                    }
-                }
-                .padding(.horizontal)
-            }
         }
         .padding(.vertical)
     }
 
     private func statItem(value: String, label: String) -> some View {
-        VStack(spacing: 2) {
+        VStack(alignment: .leading, spacing: 2) {
             Text(value)
-                .font(.headline)
+                .font(.subheadline)
                 .fontWeight(.semibold)
             Text(label)
                 .font(.caption)
-                .foregroundStyle(.secondary)
+                //.foregroundStyle(.secondary)
         }
     }
 
@@ -203,11 +208,11 @@ struct ProfileView: View {
                 userAvatar: "https://assets.leetcode.com/users/default_avatar.jpg",
                 realName: "Luis Garcia",
                 aboutMe: "iOS developer who enjoys solving algorithmic challenges.",
-                school: "University",
+                school: "TEC MTY",
                 websites: ["https://luisjg.dev"],
                 countryName: "Mexico",
                 company: nil,
-                jobTitle: "iOS Developer",
+                jobTitle: "BAT",
                 skillTags: ["Swift", "Algorithms", "Data Structures", "iOS"],
                 reputation: 42,
                 solutionCount: 15

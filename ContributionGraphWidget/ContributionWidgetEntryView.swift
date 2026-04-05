@@ -17,7 +17,6 @@ struct ContributionWidgetEntryView: View {
         switch family {
         case .systemSmall:  return 7
         case .systemMedium: return 16
-        case .systemLarge:  return 16
         default:            return 16
         }
     }
@@ -26,7 +25,6 @@ struct ContributionWidgetEntryView: View {
         switch family {
         case .systemSmall:  return 15
         case .systemMedium: return 16
-        case .systemLarge:  return 16
         default:            return 16
         }
     }
@@ -35,7 +33,6 @@ struct ContributionWidgetEntryView: View {
         switch family {
         case .systemSmall:  return 4
         case .systemMedium: return 4
-        case .systemLarge:  return 4
         default:            return 4
         }
     }

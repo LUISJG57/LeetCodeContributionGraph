@@ -74,7 +74,7 @@ struct LeetCodeContributionWidget: Widget {
         }
         .configurationDisplayName("LeetCode Contributions")
         .description("Your LeetCode submission history at a glance.")
-        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
 
